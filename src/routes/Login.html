@@ -2,12 +2,12 @@
 
 <div class="wrapper">
   <p>Você é:</p>
-  <h1>Luke Skywalker</h1>
-  <p class="desc">172 de Altura, 77 de Massa</p>
-  <p class="desc">Masculino, 1B77</p>
-  <p class="desc">Tatooine</p>
+  <h1>{user.name}</h1>
+  <p class="desc"> {user.height} de Altura, {user.mass} de Massa</p>
+  <p class="desc">{user.gender}, {user.birth_year}</p>
+  <p class="desc">{user.homeworld}</p>
   <Button size="small" on:click="refs.printable.print()" shortcut="enter">Sim, sou eu</Button>
-  <Button size="small" bgColor="#425963" on:click="requestApiData()">Não</Button>
+  <Button size="small" bgColor="#425963" on:click="buscaUser()">Não</Button>
     <br/><br/>
   <Button width="100%" secondary bgColor="#425963">Ver todos</Button>
 </div>
@@ -15,14 +15,14 @@
 <Printable ref:printable>
 
   <h1>
-    &#123;texto da impressão&#124;
+    {user.name}
   </h1>
 
 </Printable>
 
 <script>
   import http from '@mamba/pos/api/http.js';
-  
+
   export default {
     components: {
       AppBarModifier: '@mamba/appbar/Modifier.html',
@@ -31,21 +31,50 @@
     },
     data() {
       return {
-        requestConfig: {
-          url: 'https://swapi.co/api/people/1/',
-        method: 'GET',
-        connect: 'DEV',
-    }
+        user: {
+          name: 'Luke Skywalker',
+          height: '172',
+          mass: '77',
+          gender: 'Masculino',
+          birth_year: '1B77',
+          species: '',
+          homeworld: 'Tatooine',
+        }
       };
     },
     methods: {
-      requestApiData() {
-        const { requestConfig } = this.get();
+      buscaUser() {
+        
+        let user_id = Math.floor(Math.random() * 88) + 1
+        
+        let requestConfig = {
+          url: `https://swapi.co/api/people/${user_id}/`,
+          method: 'GET'
+        }
+
+        console.log('%cIniciando requisição', 'color: #FFFF33')
+        
         this.set({
           requestPromise: http
             .send(requestConfig)
             .then(result => {
-              console.log(JSON.parse(result))
+
+              const parsed = JSON.parse(result)
+
+              const user = this.get().user
+
+              this.set({
+                user: {
+                  name: parsed.name,
+                  height: parsed.height,
+                  mass: parsed.mass,
+                  gender: parsed.gender,
+                  birth_year: parsed.birth_year,
+                  species: '',
+                  homeworld: 'Tatooine',
+                }
+              })
+
             })
         });
       },
