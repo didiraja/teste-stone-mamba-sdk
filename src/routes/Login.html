@@ -1,0 +1,75 @@
+<AppBarModifier title="Login" />
+
+<div class="wrapper">
+  <p>Você é:</p>
+  <h1>Luke Skywalker</h1>
+  <p class="desc">172 de Altura, 77 de Massa</p>
+  <p class="desc">Masculino, 1B77</p>
+  <p class="desc">Tatooine</p>
+  <Button size="small" on:click="refs.printable.print()" shortcut="enter">Sim, sou eu</Button>
+  <Button size="small" bgColor="#425963" on:click="requestApiData()">Não</Button>
+    <br/><br/>
+  <Button width="100%" secondary bgColor="#425963">Ver todos</Button>
+</div>
+
+<Printable ref:printable>
+
+  <h1>
+    &#123;texto da impressão&#124;
+  </h1>
+
+</Printable>
+
+<script>
+  import http from '@mamba/pos/api/http.js';
+  
+  export default {
+    components: {
+      AppBarModifier: '@mamba/appbar/Modifier.html',
+      Button: '@mamba/button/Button.html',
+      Printable: '@mamba/printable',
+    },
+    data() {
+      return {
+        requestConfig: {
+          url: 'https://swapi.co/api/people/1/',
+        method: 'GET',
+        connect: 'DEV',
+    }
+      };
+    },
+    methods: {
+      requestApiData() {
+        const { requestConfig } = this.get();
+        this.set({
+          requestPromise: http
+            .send(requestConfig)
+            .then(result => {
+              console.log(JSON.parse(result))
+            })
+        });
+      },
+    },
+  };
+</script>
+
+<style type="text/postcss">
+  .wrapper {
+    padding: 10px;
+    text-align: center;
+  }
+
+  p {
+    font-size: 14px;
+    font-weight: normal;
+  }
+
+  h1 {
+    font-weight: bold;
+    margin: 5px 0;
+  }
+
+  .desc {
+    margin-bottom: 5px;
+  }
+</style>
