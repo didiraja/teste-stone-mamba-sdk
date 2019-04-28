@@ -1,38 +1,51 @@
 <AppBarModifier title="Home" />
 
-<p>
-  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-  <br>
-  <br>
-  <a href="/about">About</a>
-</p>
+<div class="wrapper">
+  <h1>Bem-vindo a Cantina Mos Eiley!</h1>
+  
+  <ol>
+    <li>Clique no botão e verifique se você foi identificado corretamente</li>
+    <li>Se sim, imprima seu ingresso e entre</li>
+    <li>Caso não, clique em 'Verificar novamente' até que nosso sistema te identifique corretamente</li>
+  </ol>
 
-<Printable ref:printable>
-  Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga unde dicta at quisquam doloremque sunt soluta architecto debitis, sit quidem placeat qui nam expedita quod, mollitia suscipit porro saepe recusandae.
-</Printable>
+  <Button width="100%" on:click="goTo()">Iniciar</Button>  
 
-<Button
-  size="full"
-  bottom
-  on:click="refs.printable.print()"
-  shortcut="enter"
->
-  Imprimir! (press. enter)
-</Button>
+</div>
 
 <script>
+  import Router from 'svelte-page'
+  
   export default {
     components: {
       AppBarModifier: '@mamba/appbar/Modifier.html',
-      Printable: '@mamba/printable',
-      Button: '@mamba/button',
+      Button: '@mamba/button/Button.html',
     },
+    methods: {
+      goTo() {
+        Router.go('/about')
+      },
+	  },
   };
 </script>
 
 <style type="text/postcss">
-  p {
-    padding: 20px;
-    font-size: 22px;
+  .wrapper {
+    padding: 10px
+  }
+
+  h1 {
+    font-weight: bold;
+    text-align: center;
+  }
+
+  ol {
+    list-style-type: decimal;
+    margin-left: 15px;
+  }
+  
+  li {
+    font-size: 13.9px;
+    margin-bottom: 10px;
   }
 </style>
