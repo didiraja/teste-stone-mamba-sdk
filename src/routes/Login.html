@@ -54,14 +54,17 @@
 
         // Busca info do usuário        
         console.log('%cIniciando requisição do usuário...', 'color: #FFFF33')
-        http
-          .send(requestConfig)
+        http.send(requestConfig)
           .then(result => {
 
             const parsed = JSON.parse(result)
 
-            // Localizao o objeto
-            const { user } = this.get()
+            function capitalizeFirstLetter(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+
+            // Localiza o objeto
+              const { user } = this.get()
 
             user.name = parsed.name
             user.height = parsed.height == 'unknown' ? 'Desconhecido' : parsed.height
@@ -71,22 +74,19 @@
 
             // Busca nome do Planeta
             console.log('%cIniciando requisição do Planeta...', 'color: #FFFF33')
-            http
-            .send({
+            http.send({
               url: parsed.homeworld,
-              method: 'GET' })
-            .then(result => {
-              const parsedPlanet = JSON.parse(result)
-              user.homeworld = parsedPlanet.name
-              console.log('Planeta:', user.homeworld);
+              method: 'GET'
             })
+            .then(result => {
 
-            function capitalizeFirstLetter(string) {
-                return string.charAt(0).toUpperCase() + string.slice(1);
-            }
+              const parsedPlanet = JSON.parse(result)
+              
+              user.homeworld = parsedPlanet.name == 'unknown' ? 'Desconhecido' : parsedPlanet.name
+              
+              this.set({ user })
 
-            this.set({ user })
-
+            })
           })
       },
     },
