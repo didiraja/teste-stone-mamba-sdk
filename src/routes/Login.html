@@ -52,31 +52,42 @@
           method: 'GET'
         }
 
-        console.log('%cIniciando requisição', 'color: #FFFF33')
-        
-        this.set({
-          requestPromise: http
-            .send(requestConfig)
+        // Busca info do usuário        
+        console.log('%cIniciando requisição do usuário...', 'color: #FFFF33')
+        http
+          .send(requestConfig)
+          .then(result => {
+
+            const parsed = JSON.parse(result)
+
+            // Localizao o objeto
+            const { user } = this.get()
+
+            user.name = parsed.name
+            user.height = parsed.height == 'unknown' ? 'Desconhecido' : parsed.height
+            user.mass = parsed.mass == 'unknown' ? 'Desconhecido' : parsed.mass
+            user.gender = parsed.gender == 'unknown' ? 'Desconhecido' : capitalizeFirstLetter(parsed.gender)
+            user.birth_year = parsed.birth_year == 'unknown' ? 'Desconhecido' : parsed.birth_year
+
+            // Busca nome do Planeta
+            console.log('%cIniciando requisição do Planeta...', 'color: #FFFF33')
+            http
+            .send({
+              url: parsed.homeworld,
+              method: 'GET' })
             .then(result => {
-
-              const parsed = JSON.parse(result)
-
-              const user = this.get().user
-
-              this.set({
-                user: {
-                  name: parsed.name,
-                  height: parsed.height,
-                  mass: parsed.mass,
-                  gender: parsed.gender,
-                  birth_year: parsed.birth_year,
-                  species: '',
-                  homeworld: 'Tatooine',
-                }
-              })
-
+              const parsedPlanet = JSON.parse(result)
+              user.homeworld = parsedPlanet.name
+              console.log('Planeta:', user.homeworld);
             })
-        });
+
+            function capitalizeFirstLetter(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+
+            this.set({ user })
+
+          })
       },
     },
   };
