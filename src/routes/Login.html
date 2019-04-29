@@ -1,15 +1,23 @@
 <AppBarModifier title="Login" />
 
 <div class="wrapper">
-  <p>Você é:</p>
-  <h1>{user.name}</h1>
-  <p class="desc"> {user.height} de Altura, {user.mass} de Massa</p>
-  <p class="desc">{user.gender}, {user.birth_year}</p>
-  <p class="desc">{user.homeworld}</p>
-  <Button size="small" on:click="refs.printable.print()" shortcut="enter">Sim, sou eu</Button>
-  <Button size="small" bgColor="#425963" on:click="buscaUser()">Não</Button>
-    <br/><br/>
-  <Button width="100%" secondary bgColor="#425963">Ver todos</Button>
+
+  {#if !userLoaded}
+    <CircularProgress progress="{fakeProgress}"	/>
+  {/if}
+  
+  {#if userLoaded}
+    <p>Você é:</p>
+    <h1>{user.name}</h1>
+    <p class="desc"> {user.height} de Altura, {user.mass} de Massa</p>
+    <p class="desc">{user.gender}, {user.birth_year}</p>
+    <p class="desc">{user.homeworld}</p>
+    <Button size="small" on:click="refs.printable.print()" shortcut="enter">SOU EU</Button>
+    <Button size="small" bgColor="#425963" on:click="buscaUser()">NÃO</Button>
+      <br/><br/>
+    <Button width="100%" secondary bgColor="#425963">Ver todos</Button>
+  {/if}
+  
 </div>
 
 <Printable ref:printable>
@@ -28,66 +36,93 @@
       AppBarModifier: '@mamba/appbar/Modifier.html',
       Button: '@mamba/button/Button.html',
       Printable: '@mamba/printable',
+	    CircularProgress: '@mamba/progress/Circular.html',
     },
     data() {
       return {
+        userLoaded: false,
+        fakeProgress: 0,
         user: {
-          name: 'Luke Skywalker',
-          height: '172',
-          mass: '77',
-          gender: 'Masculino',
-          birth_year: '1B77',
+          name: '',
+          height: '',
+          mass: '',
+          gender: '',
+          birth_year: '',
           species: '',
-          homeworld: 'Tatooine',
-        }
+          homeworld: '',
+        },
       };
+    },
+    onstate() {
+
+    },
+    oncreate() {
+      setInterval(() => {
+        let { fakeProgress } = this.get();
+        if (fakeProgress >= 100) fakeProgress = -1;
+        this.set({ fakeProgress: fakeProgress + 1 });
+      }, 10);
+
+      this.buscaUser();
     },
     methods: {
       buscaUser() {
+
+        this.set({ userLoaded: false });
         
-        let user_id = Math.floor(Math.random() * 88) + 1
+        const user_id = Math.floor(Math.random() * 88) + 1;
         
-        let requestConfig = {
+        const requestConfig = {
           url: `https://swapi.co/api/people/${user_id}/`,
-          method: 'GET'
-        }
+          method: 'GET',
+        };
 
         // Busca info do usuário        
-        console.log('%cIniciando requisição do usuário...', 'color: #FFFF33')
+        console.log('%cIniciando requisição do Usuário...', 'color: #FFFF33');
         http.send(requestConfig)
           .then(result => {
 
-            const parsed = JSON.parse(result)
+            const parsed = JSON.parse(result);
 
             function capitalizeFirstLetter(string) {
-                return string.charAt(0).toUpperCase() + string.slice(1);
+              return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+
+            function unknownData(string) {
+              if (string == 'unknown') {
+                return 'Desconhecido';
+              } 
+              return string;
+             
             }
 
             // Localiza o objeto
-              const { user } = this.get()
+            const { user } = this.get();
 
-            user.name = parsed.name
-            user.height = parsed.height == 'unknown' ? 'Desconhecido' : parsed.height
-            user.mass = parsed.mass == 'unknown' ? 'Desconhecido' : parsed.mass
-            user.gender = parsed.gender == 'unknown' ? 'Desconhecido' : capitalizeFirstLetter(parsed.gender)
-            user.birth_year = parsed.birth_year == 'unknown' ? 'Desconhecido' : parsed.birth_year
+            user.name = parsed.name;
+            user.height = unknownData(parsed.height);
+            user.mass = unknownData(parsed.mass);
+            user.gender = unknownData( capitalizeFirstLetter(parsed.gender) );
+            user.birth_year = parsed.birth_year == 'unknown' ? 'Desconhecido' : parsed.birth_year;
 
             // Busca nome do Planeta
-            console.log('%cIniciando requisição do Planeta...', 'color: #FFFF33')
+            console.log('%cIniciando requisição do Planeta...', 'color: #FFFF33');
             http.send({
               url: parsed.homeworld,
-              method: 'GET'
+              method: 'GET',
             })
-            .then(result => {
+              .then(result => {
 
-              const parsedPlanet = JSON.parse(result)
+                const parsedPlanet = JSON.parse(result);
               
-              user.homeworld = parsedPlanet.name == 'unknown' ? 'Desconhecido' : parsedPlanet.name
+                user.homeworld = unknownData(parsedPlanet.name);
               
-              this.set({ user })
+                this.set({ user });
+              
+                this.set({ userLoaded: true });
 
-            })
-          })
+              });
+          });
       },
     },
   };
