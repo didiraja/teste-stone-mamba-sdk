@@ -11,7 +11,7 @@
     <Button size="small"on:click="refs.printable.print()" shortcut="enter">SOU EU</Button>
     <Button size="small" bgColor="#425963" on:click="buscaUser()">NÃO</Button>
       <br /><br />
-    <Button width="100%" secondary bgColor="#425963">Ver todos</Button>
+    <Button width="100%" secondary bgColor="#425963" on:click="goTo()">Ver todos</Button>
   {/if}
   
 </div>
@@ -26,6 +26,7 @@
 
 <script>
   import http from '@mamba/pos/api/http.js';
+  import Router from 'svelte-page';
 
   export default {
     components: {
@@ -39,15 +40,7 @@
       return {
         userLoaded: false,
         fakeProgress: 0,
-        user: {
-          name: '',
-          height: '',
-          mass: '',
-          gender: '',
-          birth_year: '',
-          species: '',
-          homeworld: '',
-        },
+        user: {},
       };
     },
     oncreate() {
@@ -60,8 +53,10 @@
       this.buscaUser();
     },
     methods: {
+      goTo() {
+        Router.go('/log')
+      },
       buscaUser() {
-
         this.set({ userLoaded: false });
         
         const user_id = Math.floor(Math.random() * 88) + 1;
@@ -124,7 +119,7 @@
 
 
 <style type="text/postcss">
-.wrapper {
+  .wrapper {
     padding: 10px;
     text-align: center;
   }

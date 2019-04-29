@@ -1,0 +1,41 @@
+<AppBarModifier title="Log" />
+
+<div class="wrapper">
+  <h1>Lista de Clientes</h1>
+  
+  <ol>
+    <li>Luke Skywalker - Tatooine</li>
+    <li>Nute Gunray - Cato Neimoidia</li>
+    <li>Tarfful - Kashyyyk</li>
+  </ol>
+
+</div>
+
+<script>
+  export default {
+    components: {
+      AppBarModifier: '@mamba/appbar/Modifier.html',
+    }
+  }
+</script>
+
+<style type="text/postcss">
+  .wrapper {
+    padding: 10px
+  }
+
+  h1 {
+    font-weight: bold;
+    text-align: center;
+  }
+
+  ol {
+    list-style-type: decimal;
+    margin-left: 15px;
+  }
+  
+  li {
+    font-size: 13.9px;
+    margin-bottom: 10px;
+  }
+</style>
