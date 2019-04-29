@@ -7,14 +7,10 @@
   {/if}
   
   {#if userLoaded}
-    <p>Você é:</p>
-    <h1>{user.name}</h1>
-    <p class="desc"> {user.height} de Altura, {user.mass} de Massa</p>
-    <p class="desc">{user.gender}, {user.birth_year}</p>
-    <p class="desc">{user.homeworld}</p>
-    <Button size="small" on:click="refs.printable.print()" shortcut="enter">SOU EU</Button>
+    <UserInfos {...user} />
+    <Button size="small"on:click="refs.printable.print()" shortcut="enter">SOU EU</Button>
     <Button size="small" bgColor="#425963" on:click="buscaUser()">NÃO</Button>
-      <br/><br/>
+      <br /><br />
     <Button width="100%" secondary bgColor="#425963">Ver todos</Button>
   {/if}
   
@@ -22,10 +18,10 @@
 
 <Printable ref:printable>
 
-  <h1>
-    {user.name}
-  </h1>
-
+  <div class="wrapper">
+    <UserInfos {...user} />
+  </div>
+  
 </Printable>
 
 <script>
@@ -36,7 +32,8 @@
       AppBarModifier: '@mamba/appbar/Modifier.html',
       Button: '@mamba/button/Button.html',
       Printable: '@mamba/printable',
-	    CircularProgress: '@mamba/progress/Circular.html',
+      CircularProgress: '@mamba/progress/Circular.html',
+      UserInfos: '../components/UserInfos.html'
     },
     data() {
       return {
@@ -52,9 +49,6 @@
           homeworld: '',
         },
       };
-    },
-    onstate() {
-
     },
     oncreate() {
       setInterval(() => {
@@ -128,23 +122,10 @@
   };
 </script>
 
+
 <style type="text/postcss">
-  .wrapper {
+.wrapper {
     padding: 10px;
     text-align: center;
-  }
-
-  p {
-    font-size: 14px;
-    font-weight: normal;
-  }
-
-  h1 {
-    font-weight: bold;
-    margin: 5px 0;
-  }
-
-  .desc {
-    margin-bottom: 5px;
   }
 </style>

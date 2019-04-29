@@ -1,0 +1,37 @@
+<p>Você é:</p>
+<h1>{name}</h1>
+<p class="desc"> {height} de Altura, {mass} de Massa</p>
+<p class="desc">{gender}, {birth_year}</p>
+<p class="desc">{homeworld}</p>
+
+<script>
+  export default {
+    data() {
+      return {
+        name: '',
+        height: '',
+        mass: '',
+        gender: '',
+        birth_year: '',
+        species: '',
+        homeworld: '',
+      }
+    }
+  }
+</script>
+
+<style type="text/postcss">
+  p {
+    font-size: 14px;
+    font-weight: normal;
+  }
+
+  h1 {
+    font-weight: bold;
+    margin: 5px 0;
+  }
+
+  .desc {
+    margin-bottom: 5px;
+  }
+</style>
