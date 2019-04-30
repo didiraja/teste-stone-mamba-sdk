@@ -2,19 +2,49 @@
 
 <div class="wrapper">
   <h1>Lista de Clientes</h1>
-  
-  <ol>
-    <li>Luke Skywalker - Tatooine</li>
-    <li>Nute Gunray - Cato Neimoidia</li>
-    <li>Tarfful - Kashyyyk</li>
-  </ol>
+
+  {#if clients.length > 0}  
+    <ol>
+      {#each clients as client}
+        <li>{client.name} - {client.planet}</li>
+      {/each}
+    </ol>
+  {:else}
+    Nenhum usuário passou por aqui hoje :(
+  {/if}
 
 </div>
 
 <script>
+  import Storage from '@mamba/pos/api/storage.js';
+
   export default {
     components: {
       AppBarModifier: '@mamba/appbar/Modifier.html',
+    },
+    data() {
+      return {
+        clients: [
+          {
+            name: 'Didico',
+            planet: 'Setor 2814'
+          },
+          {
+            name: 'Hal Jordan',
+            planet: 'Setor 2814'
+          }
+        ]
+      }
+    },
+    oncreate() {
+
+      const userStore = Storage.getItem('users') // Busca lista que está na Storage
+
+      const { clients } = this.get() // Localiza o objeto no estado
+
+      clients.push(userStore) // Coloca a lista no estado
+
+      this.set({ clients }) // Define o novo estado
     }
   }
 </script>

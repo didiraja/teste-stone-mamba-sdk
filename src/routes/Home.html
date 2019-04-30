@@ -15,15 +15,24 @@
 
 <script>
   import Router from 'svelte-page'
-  
+  import Storage from '@mamba/pos/api/storage.js';
+
   export default {
     components: {
       AppBarModifier: '@mamba/appbar/Modifier.html',
       Button: '@mamba/button/Button.html',
     },
+    oncreate() {
+      const user = {
+        name: 'Thanos',
+        planet: 'Desconhecido'
+      }
+
+      Storage.setItem('users', user)
+    },
     methods: {
       goTo() {
-        Router.go('/login')
+        Router.go('/log')
       },
 	  },
   };
