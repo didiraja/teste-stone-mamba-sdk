@@ -60,7 +60,7 @@
       },
       buscaUser() {
         // Localiza o objeto
-        const { user, userAll, userLoaded } = this.get();
+        const { user, userAll } = this.get();
 
         this.set({ userLoaded: false });
 
@@ -90,7 +90,7 @@
           }
 
           function unknownData(string) {
-            if (string == 'unknown') {
+            if (string === 'unknown') {
               return 'Desconhecido';
             }
             return string;
@@ -101,7 +101,7 @@
           user.mass = unknownData(parsed.mass);
           user.gender = unknownData(capitalizeFirstLetter(parsed.gender));
           user.birth_year =
-            parsed.birth_year == 'unknown' ? 'Desconhecido' : parsed.birth_year;
+            parsed.birth_year === 'unknown' ? 'Desconhecido' : parsed.birth_year;
 
           // Busca nome do Planeta
           console.log('%cIniciando requisição do Planeta...', 'color: #FFFF33');
@@ -110,7 +110,7 @@
               url: parsed.homeworld,
               method: 'GET',
             })
-            .then(result => {
+            .then(() => {
               const parsedPlanet = JSON.parse(result);
 
               user.homeworld = unknownData(parsedPlanet.name);
