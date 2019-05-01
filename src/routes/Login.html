@@ -64,7 +64,16 @@
 
         this.set({ userLoaded: false });
 
-        const userID = Math.floor(Math.random() * 88) + 1;
+        function randomNum() {
+          return Math.floor(Math.random() * 88) + 1;
+        }
+
+        let userID = randomNum();
+
+        // previnindo erro de requisicao da API
+        if (userID === 17) {
+          userID = randomNum();
+        }
 
         const requestConfig = {
           url: `https://swapi.co/api/people/${userID}/`,

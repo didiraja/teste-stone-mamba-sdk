@@ -6,7 +6,7 @@
   {#if clients.length > 0}
     <ol>
       {#each clients as client}
-        <li>{client.name} - {client.homeworld}</li>
+        <li><strong>{client.name}</strong> - {client.homeworld}</li>
       {/each}
     </ol>
   {:else}
