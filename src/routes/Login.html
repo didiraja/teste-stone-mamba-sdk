@@ -5,7 +5,7 @@
   {#if !userLoaded}
     <CircularProgress progress="{fakeProgress}"	/>
   {/if}
-  
+
   {#if userLoaded}
     <UserInfos {...user} />
     <Button size="small"on:click="refs.printable.print()" shortcut="enter">SOU EU</Button>
@@ -13,7 +13,7 @@
       <br /><br />
     <Button width="100%" secondary bgColor="#425963" on:click="goTo()">Ver todos</Button>
   {/if}
-  
+
 </div>
 
 <Printable ref:printable>
@@ -21,12 +21,13 @@
   <div class="wrapper">
     <UserInfos {...user} />
   </div>
-  
+
 </Printable>
 
 <script>
   import http from '@mamba/pos/api/http.js';
   import Router from 'svelte-page';
+  import Storage from '@mamba/pos/api/storage.js';
 
   export default {
     components: {
@@ -34,13 +35,14 @@
       Button: '@mamba/button/Button.html',
       Printable: '@mamba/printable',
       CircularProgress: '@mamba/progress/Circular.html',
-      UserInfos: '../components/UserInfos.html'
+      UserInfos: '../components/UserInfos.html',
     },
     data() {
       return {
         userLoaded: false,
         fakeProgress: 0,
         user: {},
+        userAll: [],
       };
     },
     oncreate() {
@@ -54,64 +56,79 @@
     },
     methods: {
       goTo() {
-        Router.go('/log')
+        Router.go('/log');
       },
       buscaUser() {
+        // Localiza o objeto
+        const { user, userAll, userLoaded } = this.get();
+
         this.set({ userLoaded: false });
-        
-        const user_id = Math.floor(Math.random() * 88) + 1;
-        
+
+        const userID = Math.floor(Math.random() * 88) + 1;
+
         const requestConfig = {
-          url: `https://swapi.co/api/people/${user_id}/`,
+          url: `https://swapi.co/api/people/${userID}/`,
           method: 'GET',
         };
 
-        // Busca info do usuário        
+        // Busca info do usuário
         console.log('%cIniciando requisição do Usuário...', 'color: #FFFF33');
-        http.send(requestConfig)
-          .then(result => {
+        http.send(requestConfig).then(result => {
+          const parsed = JSON.parse(result);
 
-            const parsed = JSON.parse(result);
+          function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+          }
 
-            function capitalizeFirstLetter(string) {
-              return string.charAt(0).toUpperCase() + string.slice(1);
+          function unknownData(string) {
+            if (string == 'unknown') {
+              return 'Desconhecido';
             }
+            return string;
+          }
 
-            function unknownData(string) {
-              if (string == 'unknown') {
-                return 'Desconhecido';
-              } 
-              return string;
-             
-            }
+          user.name = parsed.name;
+          user.height = unknownData(parsed.height);
+          user.mass = unknownData(parsed.mass);
+          user.gender = unknownData(capitalizeFirstLetter(parsed.gender));
+          user.birth_year =
+            parsed.birth_year == 'unknown' ? 'Desconhecido' : parsed.birth_year;
 
-            // Localiza o objeto
-            const { user } = this.get();
-
-            user.name = parsed.name;
-            user.height = unknownData(parsed.height);
-            user.mass = unknownData(parsed.mass);
-            user.gender = unknownData( capitalizeFirstLetter(parsed.gender) );
-            user.birth_year = parsed.birth_year == 'unknown' ? 'Desconhecido' : parsed.birth_year;
-
-            // Busca nome do Planeta
-            console.log('%cIniciando requisição do Planeta...', 'color: #FFFF33');
-            http.send({
+          // Busca nome do Planeta
+          console.log('%cIniciando requisição do Planeta...', 'color: #FFFF33');
+          http
+            .send({
               url: parsed.homeworld,
               method: 'GET',
             })
-              .then(result => {
+            .then(result => {
+              const parsedPlanet = JSON.parse(result);
 
-                const parsedPlanet = JSON.parse(result);
-              
-                user.homeworld = unknownData(parsedPlanet.name);
-              
-                this.set({ user });
-              
-                this.set({ userLoaded: true });
+              user.homeworld = unknownData(parsedPlanet.name);
 
+              // ()
+              // {}
+              // ''
+              // []
+
+              console.log('user', user);
+
+              this.set({ userLoaded: true });
+
+              // Adiciona usuario a lista
+              userAll.push({
+                name: user.name,
+                homeworld: user.homeworld,
               });
-          });
+
+              console.log('userAll', userAll);
+
+              // Envia usuarios ao Storage
+              Storage.setItem('users', userAll);
+
+              console.log('Storage', Storage.getItem('users'));
+            });
+        });
       },
     },
   };

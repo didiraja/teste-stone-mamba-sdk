@@ -3,10 +3,10 @@
 <div class="wrapper">
   <h1>Lista de Clientes</h1>
 
-  {#if clients.length > 0}  
+  {#if clients.length > 0}
     <ol>
       {#each clients as client}
-        <li>{client.name} - {client.planet}</li>
+        <li>{client.name} - {client.homeworld}</li>
       {/each}
     </ol>
   {:else}
@@ -27,31 +27,30 @@
         clients: [
           {
             name: 'Didico',
-            planet: 'Setor 2814'
+            homeworld: 'Setor 2814',
           },
-          {
-            name: 'Hal Jordan',
-            planet: 'Setor 2814'
-          }
-        ]
-      }
+        ],
+      };
     },
     oncreate() {
+      const userStore = Storage.getItem('users'); // Busca lista que está na Storage
 
-      const userStore = Storage.getItem('users') // Busca lista que está na Storage
+      const { clients } = this.get(); // Localiza o objeto no estado
 
-      const { clients } = this.get() // Localiza o objeto no estado
+      console.log('Storage', Storage.getItem('users'));
 
-      clients.push(userStore) // Coloca a lista no estado
+      clients.push(...userStore); // Coloca a lista no estado
 
-      this.set({ clients }) // Define o novo estado
-    }
-  }
+      console.log('lista total', clients);
+
+      this.set({ clients }); // Define o novo estado
+    },
+  };
 </script>
 
 <style type="text/postcss">
   .wrapper {
-    padding: 10px
+    padding: 10px;
   }
 
   h1 {
@@ -63,7 +62,7 @@
     list-style-type: decimal;
     margin-left: 15px;
   }
-  
+
   li {
     font-size: 13.9px;
     margin-bottom: 10px;

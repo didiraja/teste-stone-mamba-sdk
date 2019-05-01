@@ -2,19 +2,19 @@
 
 <div class="wrapper">
   <h1>Bem-vindo a Cantina Mos Eiley!</h1>
-  
+
   <ol>
     <li>Clique no botão e verifique se você foi identificado corretamente</li>
     <li>Se sim, imprima seu ingresso e entre</li>
     <li>Caso não, clique em 'Verificar novamente' até que nosso sistema te identifique corretamente</li>
   </ol>
 
-  <Button width="100%" on:click="goTo()">Iniciar</Button>  
+  <Button width="100%" on:click="goTo()">Iniciar</Button>
 
 </div>
 
 <script>
-  import Router from 'svelte-page'
+  import Router from 'svelte-page';
   import Storage from '@mamba/pos/api/storage.js';
 
   export default {
@@ -22,25 +22,18 @@
       AppBarModifier: '@mamba/appbar/Modifier.html',
       Button: '@mamba/button/Button.html',
     },
-    oncreate() {
-      const user = {
-        name: 'Thanos',
-        planet: 'Desconhecido'
-      }
-
-      Storage.setItem('users', user)
-    },
+    oncreate() {},
     methods: {
       goTo() {
-        Router.go('/log')
+        Router.go('/login');
       },
-	  },
+    },
   };
 </script>
 
 <style type="text/postcss">
   .wrapper {
-    padding: 10px
+    padding: 10px;
   }
 
   h1 {
@@ -52,7 +45,7 @@
     list-style-type: decimal;
     margin-left: 15px;
   }
-  
+
   li {
     font-size: 13.9px;
     margin-bottom: 10px;
