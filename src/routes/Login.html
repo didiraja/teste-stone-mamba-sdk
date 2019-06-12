@@ -1,27 +1,30 @@
 <AppBarModifier title="Login" />
 
 <div class="wrapper">
-
   {#if !userLoaded}
-    <CircularProgress progress="{fakeProgress}"	/>
+  <CircularProgress progress="{fakeProgress}" />
+  {/if} {#if userLoaded}
+  <UserInfos {...user} />
+  <!-- prettier-ignore -->
+  <Button size="small" on:click="refs.printable.print()" shortcut="enter">
+    SOU EU
+  </Button>
+  <!-- prettier-ignore -->
+  <Button size="small" bgColor="#425963" on:click="buscaUser()">NÃO</Button>
+  <br /><br />
+  <!-- prettier-ignore -->
+  <Button width="100%" secondary bgColor="#425963" on:click="goTo()">
+    Ver todos
+  </Button>
   {/if}
-
-  {#if userLoaded}
-    <UserInfos {...user} />
-    <Button size="small"on:click="refs.printable.print()" shortcut="enter">SOU EU</Button>
-    <Button size="small" bgColor="#425963" on:click="buscaUser()">NÃO</Button>
-      <br /><br />
-    <Button width="100%" secondary bgColor="#425963" on:click="goTo()">Ver todos</Button>
-  {/if}
-
 </div>
 
 <Printable ref:printable>
-
-  <div class="wrapper">
+  <div style="text-align: center;">
+    {#if userLoaded}
     <UserInfos {...user} />
+    {/if}
   </div>
-
 </Printable>
 
 <script>
@@ -101,7 +104,9 @@
           user.mass = unknownData(parsed.mass);
           user.gender = unknownData(capitalizeFirstLetter(parsed.gender));
           user.birth_year =
-            parsed.birth_year === 'unknown' ? 'Desconhecido' : parsed.birth_year;
+            parsed.birth_year === 'unknown'
+              ? 'Desconhecido'
+              : parsed.birth_year;
 
           // Busca nome do Planeta
           console.log('%cIniciando requisição do Planeta...', 'color: #FFFF33');
@@ -114,11 +119,6 @@
               const parsedPlanet = JSON.parse(result);
 
               user.homeworld = unknownData(parsedPlanet.name);
-
-              // ()
-              // {}
-              // ''
-              // []
 
               console.log('user', user);
 
@@ -142,7 +142,6 @@
     },
   };
 </script>
-
 
 <style type="text/postcss">
   .wrapper {

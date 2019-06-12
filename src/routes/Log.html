@@ -4,15 +4,12 @@
   <h1>Lista de Clientes</h1>
 
   {#if clients.length > 0}
-    <ol>
-      {#each clients as client}
-        <li><strong>{client.name}</strong> - {client.homeworld}</li>
-      {/each}
-    </ol>
-  {:else}
-    Nenhum usuário passou por aqui hoje :(
-  {/if}
-
+  <ol>
+    {#each clients as client}
+    <li><strong>{client.name}</strong> - {client.homeworld}</li>
+    {/each}
+  </ol>
+  {:else} Nenhum usuário passou por aqui hoje :( {/if}
 </div>
 
 <script>
